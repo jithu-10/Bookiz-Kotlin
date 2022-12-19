@@ -9,7 +9,7 @@ import hotelbooking.booking.CancelBooking
 import hotelbooking.booking.CustomerBookingInterface
 import hotelbooking.hotel.HotelCustomerInterface
 import hotelbooking.hotel.HotelInterface
-import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.RoomCustomerView
 import hotelbooking.users.Customer
 import java.lang.Exception
 import java.util.*
@@ -80,7 +80,7 @@ object CustomerView {
                     val choice = getInputWithinRange(1,availableHotels.size, null)
                     println("\n\n")
                     val hotel: HotelCustomerInterface = availableHotels[choice-1]
-                    val rooms: List<Room> = availableHotelsWithRooms[hotel]!!
+                    val rooms: List<RoomCustomerView> = availableHotelsWithRooms[hotel]!!
                     val booked: Boolean = expandedHotelDetails(
                         hotel,
                         customer,
@@ -104,7 +104,7 @@ object CustomerView {
     private fun printHotelDetailsWithBooking(
         sno: Int,
         hotel: HotelCustomerInterface,
-        rooms: List<Room>,
+        rooms: List<RoomCustomerView>,
         noOfGuestsInEachRoom: List<Int>
     ) {
         printHotelDetails(sno, hotel)
@@ -132,7 +132,7 @@ object CustomerView {
     private fun expandedHotelDetails(
         hotel: HotelCustomerInterface,
         customer: Customer,
-        rooms: List<Room>,
+        rooms: List<RoomCustomerView>,
         book: Book
     ): Boolean {
         println(hotel.getHotelType().toString() + " " + hotel.getID() + " " + hotel.getName())
@@ -163,9 +163,9 @@ object CustomerView {
         var i =0
         for (room in rooms) {
             val roomPrice_oneDay: Double =
-                room.roomPrice.getListPrice() + noOfGuestsInEachRoom[i] * room.bedPrice.basePrice
+                room.getRoomPrice().getListPrice() + noOfGuestsInEachRoom[i] * room.getBedPrice().basePrice
             val roomPrice_total = roomPrice_oneDay * book.getNoOfDays()
-            println("Room " + (i + 1) + " : ₹" + room.roomPrice.maxPrice + "(org price) : ₹" + room.roomPrice.getListPrice() + "(discounted price) + (" + noOfGuestsInEachRoom[i] + "*" + room.bedPrice + ") = ₹" + roomPrice_oneDay + " * " + book.getNoOfDays() + "(days) : ₹" + roomPrice_total)
+            println("Room " + (i + 1) + " : ₹" + room.getRoomPrice().maxPrice + "(org price) : ₹" + room.getRoomPrice().getListPrice() + "(discounted price) + (" + noOfGuestsInEachRoom[i] + "*" + room.getBedPrice() + ") = ₹" + roomPrice_oneDay + " * " + book.getNoOfDays() + "(days) : ₹" + roomPrice_total)
             totalPrice += roomPrice_total
             i++
         }
@@ -223,28 +223,29 @@ object CustomerView {
         return 3
     }
 
-    private fun getListPrice( rooms: List<Room>): Double {
+    private fun getListPrice( rooms: List<RoomCustomerView>): Double {
         var listPrice  =0.0
         for (room in rooms) {
-            listPrice += room.roomPrice.getListPrice()
+            listPrice += room.getRoomPrice().getListPrice()
         }
+
         return listPrice
     }
 
-    private fun getMaxPrice(rooms: List<Room>): Double {
+    private fun getMaxPrice(rooms: List<RoomCustomerView>): Double {
         var maxPrice = 0.0
         for (room in rooms) {
 
-            maxPrice += room.roomPrice.maxPrice
+            maxPrice += room.getRoomPrice().maxPrice
         }
         return maxPrice
     }
 
-    private fun getBedPrice(rooms: List<Room>, noOfGuestsInEachRoom: List<Int>): Double {
+    private fun getBedPrice(rooms: List<RoomCustomerView>, noOfGuestsInEachRoom: List<Int>): Double {
         var bedPrice = 0.0
         var i =0
         for (room in rooms) {
-            bedPrice += room.bedPrice.getListPrice() * noOfGuestsInEachRoom[i]
+            bedPrice += room.getBedPrice().getListPrice() * noOfGuestsInEachRoom[i]
             i++
         }
         return bedPrice

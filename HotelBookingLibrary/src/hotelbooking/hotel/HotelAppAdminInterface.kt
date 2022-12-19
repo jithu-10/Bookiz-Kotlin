@@ -1,6 +1,7 @@
 package hotelbooking.hotel
 
 import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.RoomAdminView
 
 interface HotelAppAdminInterface : HotelInterface {
     override fun getName() : String
@@ -12,7 +13,7 @@ interface HotelAppAdminInterface : HotelInterface {
     fun setHotelType(hotelType: HotelType)
     fun getApprovalStatus() : HotelApprovalStatus
     fun setApprovalStatus(hotelApprovalStatus: HotelApprovalStatus)
-    fun getRooms() : List<Room>
+    fun getRoomsForAdmin() : List<RoomAdminView>
     fun getTotalNumberOfRooms(): Int
     fun getAmenities() : List<Amenity>
     fun getTotalAmenityPercent() : Int

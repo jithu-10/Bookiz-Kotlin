@@ -2,6 +2,7 @@ package hotelbooking.booking
 
 import hotelbooking.hotel.room.Room
 import hotelbooking.hotel.HotelInterface
+import hotelbooking.hotel.room.RoomCustomerView
 import hotelbooking.users.UserData
 import java.util.*
 
@@ -11,7 +12,7 @@ internal class BookingDetails(
     private val customerData : UserData,
     private val hotel : HotelInterface,
     private val noOfGuestsInEachRoom : List<Int>,
-    private val bookedRooms : List<Room>,
+    private val bookedRooms : List<RoomCustomerView>,
     private val paid : Boolean,
     private var bookingStatus : BookingStatus
 ) : CustomerBookingInterface, HotelBookingInterface {
@@ -60,7 +61,7 @@ internal class BookingDetails(
         return noOfGuestsInEachRoom.size
     }
 
-    override fun getBookedRooms(): List<Room> {
+    override fun getBookedRooms(): List<RoomCustomerView> {
         return bookedRooms
     }
 

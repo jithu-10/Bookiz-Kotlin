@@ -1,7 +1,9 @@
 package hotelbooking.hotel
 
 import hotelbooking.booking.HotelBookingInterface
+import hotelbooking.hotel.room.Price
 import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.RoomHotelView
 import java.util.*
 
 interface HotelAdminInterface : HotelInterface {
@@ -13,10 +15,11 @@ interface HotelAdminInterface : HotelInterface {
     fun setHotelType()
     fun setHotelType(hotelType: HotelType)
     fun getApprovalStatus() : HotelApprovalStatus
-    fun getRooms() : List<Room>
+    fun getRooms() : List<RoomHotelView>
     fun getTotalNumberOfRooms(): Int
-    fun addRoom(room : Room)
-    fun removeRoom(room : Room)
+//    fun addRoom(room : Room)
+    fun addRoom(maxGuest : Int, roomPrice : Price, bedPrice : Price)
+    fun removeRoom(room : RoomHotelView)
     fun getAmenities() : List<Amenity>
     fun getAllAmenities() : List<Amenity>
     fun addAmenity(amenity: Amenity)

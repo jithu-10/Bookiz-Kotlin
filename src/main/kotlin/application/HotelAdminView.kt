@@ -8,7 +8,7 @@ import application.InputHelper.getStringInput
 import hotelbooking.booking.HotelBookingInterface
 import hotelbooking.hotel.*
 import hotelbooking.hotel.room.Price
-import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.RoomHotelView
 import hotelbooking.users.HotelAdmin
 import hotelbooking.users.UserData
 import java.util.*
@@ -197,8 +197,9 @@ object HotelAdminView {
             val roomPrice: Price = getRoomPrice()
             val bedPrice: Price = getBedPrice()
             for (j in 0 until noOfRooms) {
-                val room = Room(maxGuest, roomPrice, bedPrice)
-                hotel.addRoom(room)
+                //val room = Room(maxGuest, roomPrice, bedPrice)
+                //hotel.addRoom(room)
+                hotel.addRoom(maxGuest,roomPrice,bedPrice)
             }
         }
     }
@@ -275,7 +276,7 @@ object HotelAdminView {
     }
 
     private fun changeRoomPrices(hotel : HotelAdminInterface){
-        val rooms: List<Room> = hotel.getRooms()
+        val rooms: List<RoomHotelView> = hotel.getRooms()
         displayRooms(rooms)
         println("Change Room Price")
         println("Enter S.No Change Room Price : ")
@@ -283,8 +284,8 @@ object HotelAdminView {
         val room = rooms[choice - 1]
         val roomPrice = getRoomPrice()
         val bedPrice = getBedPrice()
-        room.roomPrice=roomPrice
-        room.bedPrice=bedPrice
+        room.setRoomPrice(roomPrice)
+        room.setBedPrice(bedPrice)
     }
 
 
@@ -386,11 +387,11 @@ object HotelAdminView {
     }
 
 
-    private fun displayRooms(rooms: List<Room>) {
+    private fun displayRooms(rooms: List<RoomHotelView>) {
         var sno = 0
         for (room in rooms) {
-            println((sno + 1).toString() + ".Room Max Capacity : " + room.roomCapacity)
-            println("Room Base Price : " + room.roomPrice.basePrice + "  Room Max Price : " + room.roomPrice.maxPrice)
+            println((sno + 1).toString() + ".Room Max Capacity : " + room.getRoomCapacity())
+            println("Room Base Price : " + room.getRoomPrice().basePrice + "  Room Max Price : " + room.getRoomPrice().maxPrice)
             println()
             sno++
         }

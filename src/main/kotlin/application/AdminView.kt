@@ -9,7 +9,7 @@ import hotelbooking.hotel.Amenity
 import hotelbooking.hotel.HotelAppAdminInterface
 import hotelbooking.hotel.HotelInterface
 import hotelbooking.hotel.HotelType
-import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.RoomAdminView
 import hotelbooking.users.AppAdmin
 import hotelbooking.users.UserData
 
@@ -124,21 +124,21 @@ object AdminView {
         }
     }
 
-    private fun displayRooms(rooms: List<Room>) {
+    private fun displayRooms(rooms: List<RoomAdminView>) {
         var i = 0
         for (room in rooms) {
             with(room){
-                println( (i + 1).toString() + ". Max Guest : " + roomCapacity + " Base Price : " + roomPrice.basePrice + " Max Price : " + roomPrice.maxPrice + " List Price : " + roomPrice.getListPrice()) 
+                println( (i + 1).toString() + ". Max Guest : " + getRoomCapacity() + " Base Price : " + getRoomPrice().basePrice + " Max Price : " + getRoomPrice().maxPrice + " List Price : " + getRoomPrice().getListPrice())
             }
             i++
-            
         }
+
     }
 
     private fun setPriceForHotelRooms(hotel: HotelAppAdminInterface) {
         do {
             println("Set Price for Hotel Rooms")
-            val rooms = hotel.getRooms()
+            val rooms = hotel.getRoomsForAdmin()
             displayRooms(rooms)
             println("1.Change Room List Price")
             println("2.Back")
@@ -149,12 +149,12 @@ object AdminView {
             println("Enter Room No. to change list price : ")
             val choice = getInputWithinRange(1,rooms.size, null)
             val room = rooms[choice - 1]
-            println("Base Price : " + room.roomPrice.basePrice + " Max Price : " + room.roomPrice.maxPrice + " List Price : " + room.roomPrice.getListPrice())
+            println("Base Price : " + room.getRoomPrice().basePrice + " Max Price : " + room.getRoomPrice().maxPrice + " List Price : " + room.getRoomPrice().getListPrice())
             println("Enter New List Price : ")
             do {
                 try {
                     val listPrice: Double = InputHelper.getDoubleInput()
-                    room.roomPrice.setListPrice(listPrice)
+                    room.getRoomPrice().setListPrice(listPrice)
                     break
                 } catch (e: Exception) {
                     println(e.message)

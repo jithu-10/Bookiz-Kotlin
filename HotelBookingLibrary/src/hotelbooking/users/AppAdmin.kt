@@ -9,6 +9,8 @@ import hotelbooking.hotel.Amenity
 import hotelbooking.hotel.Hotel
 import hotelbooking.hotel.HotelAppAdminInterface
 import hotelbooking.hotel.HotelApprovalStatus
+import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.RoomAdminView
 
 class AppAdmin internal constructor(): User {
     override val userData: UserData = UserData("admin",1234567890,"admin@bookiz.com")
@@ -34,6 +36,11 @@ class AppAdmin internal constructor(): User {
         LocationDB.removeLocation(hotel.getAddress().locality)
         LocationDB.removeLocation(hotel.getAddress().city)
         hotel.setApprovalStatus(HotelApprovalStatus.REMOVED)
+    }
+
+    fun setListPriceForHotelRoom(room : RoomAdminView,roomListPrice : Double,bedListPrice : Double){
+        (room as Room).getRoomPrice().setListPrice(roomListPrice)
+        room.getBedPrice().setListPrice(bedListPrice)
     }
 
     fun getRegisteredHotels() : List<HotelAppAdminInterface>{

@@ -3,9 +3,10 @@ package hotelbooking.hotel
 import hotelbooking.db.AmenityDB
 import hotelbooking.booking.HotelBookingInterface
 import hotelbooking.getDatesBetweenTwoDates
-import hotelbooking.hotel.room.Room
+import hotelbooking.hotel.room.*
 import hotelbooking.users.UserData
 import java.util.*
+import kotlin.collections.ArrayList
 
 internal class Hotel(
     private val hotelOwner : UserData,
@@ -67,25 +68,37 @@ internal class Hotel(
         return approvalStatus;
     }
 
+    override fun getRooms(): List<RoomHotelView> {
+        return rooms
+    }
+
+    override fun getRoomsForAdmin(): List<RoomAdminView>{
+        return rooms
+    }
+
+
+
     override fun setApprovalStatus(approvalStatus: HotelApprovalStatus){
         this.approvalStatus=approvalStatus
     }
 
-    override fun getRooms() : List<Room>{
-        return rooms;
-    }
+
 
     override fun getTotalNumberOfRooms(): Int {
         return rooms.size
     }
 
-    override fun addRoom(room : Room) {
-        rooms.add(room)
+
+
+    override fun addRoom(maxGuest: Int, roomPrice: Price, bedPrice: Price) {
+        rooms.add(Room(maxGuest,roomPrice,bedPrice))
     }
 
-    override fun removeRoom(room : Room){
+    override fun removeRoom(room: RoomHotelView) {
         rooms.remove(room)
     }
+
+
 
     override fun getAmenities() : List<Amenity>{
         return amenities;
@@ -127,9 +140,9 @@ internal class Hotel(
         addRoomBooking(booking.getCheckInDate(),booking.getCheckOutDate(),booking.getBookedRooms())
     }
 
-    private fun addRoomBooking(checkInDate : Date, checkOutDate : Date, rooms : List<Room>){
+    private fun addRoomBooking(checkInDate : Date, checkOutDate : Date, rooms : List<RoomCustomerView>){
         for(room in rooms){
-            updateRoomBookedStatus(room,checkInDate,checkOutDate,true)
+            updateRoomBookedStatus(room as Room,checkInDate,checkOutDate,true)
         }
     }
 
@@ -138,9 +151,9 @@ internal class Hotel(
         cancelRoomBooking(booking.getCheckInDate(),booking.getCheckOutDate(),booking.getBookedRooms())
     }
 
-    private fun cancelRoomBooking(checkInDate: Date,checkOutDate: Date,rooms : List<Room>){
+    private fun cancelRoomBooking(checkInDate: Date,checkOutDate: Date,rooms : List<RoomCustomerView>){
         for(room in rooms){
-            updateRoomBookedStatus(room,checkInDate,checkOutDate,false)
+            updateRoomBookedStatus(room as Room,checkInDate,checkOutDate,false)
         }
     }
 
@@ -181,7 +194,7 @@ internal class Hotel(
         }
     }
 
-    internal fun checkRoomBookedByDate(room : Room, date: Date): Boolean {
+    internal fun checkRoomBookedByDate(room : RoomHotelView, date: Date): Boolean {
         val bookedDates = roomBookedStatus[room]
         return bookedDates != null && bookedDates.contains(date)
     }
