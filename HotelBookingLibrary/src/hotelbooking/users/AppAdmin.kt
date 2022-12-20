@@ -38,11 +38,6 @@ class AppAdmin internal constructor(): User {
         hotel.setApprovalStatus(HotelApprovalStatus.REMOVED)
     }
 
-    fun setListPriceForHotelRoom(room : RoomAdminView,roomListPrice : Double,bedListPrice : Double){
-        (room as Room).getRoomPrice().setListPrice(roomListPrice)
-        room.getBedPrice().setListPrice(bedListPrice)
-    }
-
     fun getRegisteredHotels() : List<HotelAppAdminInterface>{
         return HotelDB.getHotels()
             .filter { hotel : Hotel -> hotel.getApprovalStatus()== HotelApprovalStatus.APPROVED };

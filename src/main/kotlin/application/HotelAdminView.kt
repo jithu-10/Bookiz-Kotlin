@@ -29,6 +29,7 @@ object HotelAdminView {
             }
 
         }while(true)
+
     }
 
 
@@ -197,8 +198,6 @@ object HotelAdminView {
             val roomPrice: Price = getRoomPrice()
             val bedPrice: Price = getBedPrice()
             for (j in 0 until noOfRooms) {
-                //val room = Room(maxGuest, roomPrice, bedPrice)
-                //hotel.addRoom(room)
                 hotel.addRoom(maxGuest,roomPrice,bedPrice)
             }
         }

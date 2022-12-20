@@ -128,7 +128,7 @@ object AdminView {
         var i = 0
         for (room in rooms) {
             with(room){
-                println( (i + 1).toString() + ". Max Guest : " + getRoomCapacity() + " Base Price : " + getRoomPrice().basePrice + " Max Price : " + getRoomPrice().maxPrice + " List Price : " + getRoomPrice().getListPrice())
+                println( (i + 1).toString() + ". Max Guest : " + getRoomCapacity() + " Base Price : " + getRoomPrice().basePrice + " Max Price : " + getRoomPrice().maxPrice + " List Price : " + getRoomPrice().listPrice)
             }
             i++
         }
@@ -149,12 +149,12 @@ object AdminView {
             println("Enter Room No. to change list price : ")
             val choice = getInputWithinRange(1,rooms.size, null)
             val room = rooms[choice - 1]
-            println("Base Price : " + room.getRoomPrice().basePrice + " Max Price : " + room.getRoomPrice().maxPrice + " List Price : " + room.getRoomPrice().getListPrice())
+            println("Base Price : " + room.getRoomPrice().basePrice + " Max Price : " + room.getRoomPrice().maxPrice + " List Price : " + room.getRoomPrice().listPrice)
             println("Enter New List Price : ")
             do {
                 try {
                     val listPrice: Double = InputHelper.getDoubleInput()
-                    room.getRoomPrice().setListPrice(listPrice)
+                    room.setRoomListPrice(listPrice)
                     break
                 } catch (e: Exception) {
                     println(e.message)
@@ -172,15 +172,9 @@ object AdminView {
         }
         println("ID\t Hotel Name\t\t\t\tLocality \t\t\t\tRooms\tTypeofRoom\n")
         for (hotel in hotels) {
+            println("ID   Hotel Name     Locality       Rooms      TypeOfRoom")
             with(hotel){
-                System.out.printf(
-                    "%-4s %-20s %-25s %-7s %-7s",
-                    getID(),
-                    getName(),
-                    getAddress().locality + "," + getAddress().city,
-                    getTotalNumberOfRooms(),
-                )
-                println()
+                println(getID().toString()+"  "+getName()+"  "+getAddress().locality+","+getAddress().city+"      "+getTotalNumberOfRooms()+"    "+getHotelType())
             }
             
             

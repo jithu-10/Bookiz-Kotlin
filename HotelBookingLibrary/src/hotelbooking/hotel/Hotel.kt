@@ -214,6 +214,4 @@ internal class Hotel(
 
 
 
-
-
 }

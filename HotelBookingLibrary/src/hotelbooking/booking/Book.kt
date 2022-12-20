@@ -61,7 +61,7 @@ class Book(
         var i =0
         for (room in rooms) {
             val roomPrice_oneDay: Double =
-                room.getRoomPrice().getListPrice() + noOfGuestsInEachRoom[i] * room.getBedPrice().basePrice
+                room.getRoomPrice().listPrice + noOfGuestsInEachRoom[i] * room.getBedPrice().basePrice
             val roomPrice_total = roomPrice_oneDay * getNoOfDays()
             totalPrice += roomPrice_total
             i++

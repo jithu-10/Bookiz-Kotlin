@@ -28,6 +28,15 @@ internal data class Room(
         this.roomPrice=roomPrice
     }
 
+    override fun setRoomListPrice(listPrice : Double){
+        roomPrice = roomPrice.copy( listPrice = listPrice)
+    }
+
+    override fun setBedListPrice(listPrice: Double){
+        bedPrice = bedPrice.copy( listPrice = listPrice)
+    }
+
+
 
 
     override fun getBedPrice() : Price{
