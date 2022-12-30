@@ -3,14 +3,13 @@ package hotelbooking.booking
 import hotelbooking.db.BookingDB
 import hotelbooking.db.HotelDB
 import hotelbooking.db.LocationDB
-import hotelbooking.getDatesBetweenTwoDates
+import hotelbooking.helper.getDatesBetweenTwoDates
+import hotelbooking.hotel.*
 import hotelbooking.hotel.Hotel
-import hotelbooking.hotel.HotelApprovalStatus
-import hotelbooking.hotel.HotelCustomerInterface
 import hotelbooking.hotel.room.Room
-import hotelbooking.hotel.room.RoomCustomerView
-import hotelbooking.hotel.room.RoomHotelView
-import hotelbooking.modifyString
+import hotelbooking.hotel.room.RoomCustomerPanel
+import hotelbooking.hotel.room.RoomHotelPanel
+import hotelbooking.helper.modifyString
 import hotelbooking.users.Customer
 import java.util.*
 
@@ -22,7 +21,7 @@ class Book(
 
 
 
-    private lateinit var availHotelAndRoomsMap : LinkedHashMap<HotelCustomerInterface,List<RoomCustomerView>>
+    private lateinit var availHotelAndRoomsMap : LinkedHashMap<HotelCustomerPanel,List<RoomCustomerPanel>>
 
 
     init{
@@ -33,7 +32,7 @@ class Book(
 
 
 
-    fun bookHotel(customer : Customer, hotel : HotelCustomerInterface, paymentStatus: Boolean){
+    fun bookHotel(customer : Customer, hotel : HotelCustomerPanel, paymentStatus: Boolean){
         if(!availHotelAndRoomsMap.contains(hotel)){
             throw Exception("Unavailable Hotel")
         }
@@ -49,14 +48,15 @@ class Book(
         )
         setTotalPrice(availHotelAndRoomsMap[hotel]!!,booking)
         availHotelAndRoomsMap.clear();
-        BookingDB.addBooking(booking)
-        customer.addBooking(booking)
-        (hotel as Hotel).addBooking(booking)
+        BookingDB.addBooking(booking.getCustomerBookingPanel())
+        customer.addBooking(booking.getCustomerBookingPanel())
+        hotel.hotel.addBooking(booking.getHotelBookingPanel())
+
 
     }
 
 
-    private fun setTotalPrice(rooms: List<RoomCustomerView>, booking : BookingDetails){
+    private fun setTotalPrice(rooms: List<RoomCustomerPanel>, booking : BookingDetails){
         var totalPrice = 0.0
         var i =0
         for (room in rooms) {
@@ -77,29 +77,28 @@ class Book(
 
 
 
-
-
-    fun filterHotels() :Map<HotelCustomerInterface, List<RoomCustomerView>>{
+    fun filterHotels() :Map<HotelCustomerPanel, List<RoomCustomerPanel>>{
         val totalNoOfRoomsNeeded = noOfGuestsInEachRoom.size;
         val datesInRange: ArrayList<Date> = getDatesBetweenTwoDates(checkInDate, checkOutDate)
         datesInRange.add(checkOutDate)
         val hotels : List<Hotel> = HotelDB.getHotels()
             .filter { hotel: Hotel -> hotel.getApprovalStatus() == HotelApprovalStatus.APPROVED }
-        val hotelAndRoomsMap = LinkedHashMap<HotelCustomerInterface, List<RoomCustomerView>>()
-        modifyString(locality)
+        val hotelAndRoomsMap = LinkedHashMap<HotelCustomerPanel, List<RoomCustomerPanel>>()
         for(hotel in hotels){
 
-            if (modifyString(hotel.getAddress().locality) != locality && modifyString(hotel.getAddress().city) != locality
+            if (modifyString(hotel.getAddress().locality) != modifyString(locality) && modifyString(hotel.getAddress().city) != modifyString(locality)
             ) {
                 continue
             }
+
             if (hotel.getTotalNumberOfRooms() < totalNoOfRoomsNeeded) {
 
                 continue
             }
 
-            val filteredRooms: List<RoomCustomerView> = filterRooms(hotel, datesInRange, totalNoOfRoomsNeeded, noOfGuestsInEachRoom)?:continue
-            hotelAndRoomsMap[hotel] = filteredRooms
+            val filteredRooms: List<RoomCustomerPanel> = filterRooms(hotel, datesInRange, totalNoOfRoomsNeeded, noOfGuestsInEachRoom)?:continue
+
+            hotelAndRoomsMap[hotel.getHotelCustomerInterface()] = filteredRooms
 
         }
         availHotelAndRoomsMap = hotelAndRoomsMap
@@ -111,24 +110,29 @@ class Book(
 
 
 
-    private fun filterRooms(hotel: Hotel, datesInRange: ArrayList<Date>, noOfRoomsNeeded: Int, noOfGuestsInEachRoom: List<Int>): List<RoomCustomerView>? {
+    private fun filterRooms(hotel: Hotel, datesInRange: ArrayList<Date>, noOfRoomsNeeded: Int, noOfGuestsInEachRoom: List<Int>): List<RoomCustomerPanel>? {
         Collections.sort(noOfGuestsInEachRoom, Collections.reverseOrder())
-        val rooms = hotel.getRooms()
+        val rooms = hotel.getRooms().map { it.room }
         val selectedRooms = ArrayList<Room>()
+
         for (i in noOfGuestsInEachRoom.indices) {
             val noOfGuests = noOfGuestsInEachRoom[i]
+
             val availRooms = ArrayList<Room>()
             for (j in rooms.indices) {
                 if (selectedRooms.contains(rooms[j])) {
                     continue
                 }
                 if (noOfGuests > rooms[j].getRoomCapacity()) {
+
                     continue
                 }
                 if (!dateAvailabilityCheck(datesInRange, hotel, rooms[j])) {
+
                     continue
                 }
-                availRooms.add(rooms[j] as Room)
+                availRooms.add(rooms[j])
+
             }
             if (availRooms.isEmpty()) {
                 return null
@@ -143,12 +147,24 @@ class Book(
             }
             selectedRooms.add(selectedRoom)
         }
+
         return if (selectedRooms.size == noOfRoomsNeeded) {
-            selectedRooms
+            selectedRooms.map { it.getRoomCustomerPanel() }
         } else null
     }
 
-    private fun dateAvailabilityCheck(datesInRange: ArrayList<Date>, hotel: Hotel, room: RoomHotelView): Boolean {
+
+
+
+
+
+
+
+
+
+
+
+    private fun dateAvailabilityCheck(datesInRange: ArrayList<Date>, hotel: Hotel, room: Room): Boolean {
         for (i in datesInRange.indices) {
             if (hotel.checkRoomBookedByDate(room, datesInRange[i])) {
                 return false

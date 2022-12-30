@@ -4,12 +4,9 @@ import application.InputHelper.getInputWithinRange
 import application.InputHelper.getIntegerInput
 import application.InputHelper.getSimpleDateWithoutYear
 import application.InputHelper.getStringInput
-import hotelbooking.booking.BookingInterface
-import hotelbooking.hotel.Amenity
-import hotelbooking.hotel.HotelAppAdminInterface
-import hotelbooking.hotel.HotelInterface
-import hotelbooking.hotel.HotelType
-import hotelbooking.hotel.room.RoomAdminView
+import hotelbooking.booking.BookingPanel
+import hotelbooking.hotel.*
+import hotelbooking.hotel.room.RoomAdminPanel
 import hotelbooking.users.AppAdmin
 import hotelbooking.users.UserData
 
@@ -110,7 +107,7 @@ object AdminView {
         return getInputWithinRange(1,2, null)
     }
 
-    private fun changeHotelTypeSpecification(hotel: HotelAppAdminInterface) {
+    private fun changeHotelTypeSpecification(hotel: HotelAppAdminPanel) {
         println("Select Hotel Type : ")
         println("1." + HotelType.ELITE + " HOTEL ")
         println("2." + HotelType.PREMIUM + " HOTEL ")
@@ -124,7 +121,7 @@ object AdminView {
         }
     }
 
-    private fun displayRooms(rooms: List<RoomAdminView>) {
+    private fun displayRooms(rooms: List<RoomAdminPanel>) {
         var i = 0
         for (room in rooms) {
             with(room){
@@ -135,7 +132,7 @@ object AdminView {
 
     }
 
-    private fun setPriceForHotelRooms(hotel: HotelAppAdminInterface) {
+    private fun setPriceForHotelRooms(hotel: HotelAppAdminPanel) {
         do {
             println("Set Price for Hotel Rooms")
             val rooms = hotel.getRoomsForAdmin()
@@ -165,7 +162,7 @@ object AdminView {
 
 
     private fun listRegisteredHotels(appAdmin: AppAdmin) {
-        val hotels: List<HotelAppAdminInterface> = appAdmin.getRegisteredHotels()
+        val hotels: List<HotelAppAdminPanel> = appAdmin.getRegisteredHotels()
         if (hotels.isEmpty()) {
             println("No Hotel Avail")
             return
@@ -223,7 +220,7 @@ object AdminView {
 
 
 
-    private fun setPrice(hotel: HotelAppAdminInterface) {
+    private fun setPrice(hotel: HotelAppAdminPanel) {
         with(hotel){
             println("Hotel ID : " + getID())
             println("Hotel Name : " + getName())
@@ -270,7 +267,7 @@ object AdminView {
 
 
     private fun listAllBookings(appAdmin: AppAdmin) {
-        val bookings: List<BookingInterface> = appAdmin.getAllBookings()
+        val bookings: List<BookingPanel> = appAdmin.getAllBookings()
         if (bookings.isEmpty()) {
             println("No Bookings Avail")
             return
@@ -279,7 +276,7 @@ object AdminView {
         var i = 0
         for (booking in bookings) {
             val customer: UserData = booking.getCustomerData()
-            val hotel: HotelInterface = booking.getHotel()
+            val hotel: HotelPanel = booking.getHotel()
             println((i + 1).toString() + ". " + "Booking ID" + booking.getBookingID())
             println("Check In Date : " + getSimpleDateWithoutYear(booking.getCheckInDate()))
             println("Check Out Date : " + getSimpleDateWithoutYear(booking.getCheckOutDate()))

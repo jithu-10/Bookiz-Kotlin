@@ -1,9 +1,23 @@
 package hotelbooking.hotel.room
 
-interface RoomHotelView {
-    fun getRoomCapacity() : Int
-    fun getRoomPrice() : Price
-    fun setRoomPrice(roomPrice : Price)
-    fun getBedPrice() : Price
-    fun setBedPrice(bedPrice : Price)
+
+class RoomHotelPanel internal constructor(internal val room : Room){
+
+    fun getRoomCapacity() : Int{
+        return room.getRoomCapacity()
+    }
+
+    fun setRoomPrice(roomPrice : Price){
+        room.setRoomPrice(roomPrice)
+    }
+    fun setBedPrice(bedPrice : Price){
+        room.setBedPrice(bedPrice)
+    }
+    fun getRoomPrice() : Price{
+        return room.getRoomPrice()
+    }
+
+    fun getBedPrice() : Price{
+        return room.getBedPrice()
+    }
 }

@@ -1,34 +1,32 @@
 package hotelbooking.users
 
-import hotelbooking.hotel.Address
-import hotelbooking.hotel.HotelApprovalStatus
 import hotelbooking.db.HotelDB
+import hotelbooking.hotel.*
 import hotelbooking.hotel.Hotel
-import hotelbooking.hotel.HotelAdminInterface
 
 class HotelAdmin internal constructor(override val userData: UserData) : User {
-    private val hotelsOwned : ArrayList<HotelAdminInterface> = ArrayList();
-    fun getHotelsOwned(): List<HotelAdminInterface>{
+    private val hotelsOwned : ArrayList<HotelAdminPanel> = ArrayList();
+    fun getHotelsOwned(): List<HotelAdminPanel>{
         return hotelsOwned
     }
 
 
 
-    fun registerHotel(userData: UserData, name : String, address : Address) : HotelAdminInterface {
+    fun registerHotel(userData: UserData, name : String, address : Address) : HotelAdminPanel {
         val hotel : Hotel = Hotel(userData,name, address)
-        hotelsOwned.add(hotel)
+        hotelsOwned.add(hotel.getHotelAdminInterface())
         HotelDB.addHotel(hotel)
-        return hotel
+        return hotel.getHotelAdminInterface()
     }
 
 
 
 
-    fun reRegisterHotel(hotel : HotelAdminInterface){
+    fun reRegisterHotel(hotel : HotelAdminPanel){
         if (hotel.getApprovalStatus() === HotelApprovalStatus.REJECTED) {
-            (hotel as Hotel).setApprovalStatus(HotelApprovalStatus.ON_PROCESS)
+            hotel.hotel.getHotelAppAdminInterface().setApprovalStatus(HotelApprovalStatus.ON_PROCESS)
         } else if (hotel.getApprovalStatus() === HotelApprovalStatus.REMOVED) {
-            (hotel as Hotel).setApprovalStatus(HotelApprovalStatus.REMOVED_RE_PROCESS)
+            hotel.hotel.getHotelAppAdminInterface().setApprovalStatus(HotelApprovalStatus.REMOVED_RE_PROCESS)
         }
     }
 

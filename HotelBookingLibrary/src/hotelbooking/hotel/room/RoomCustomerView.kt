@@ -1,7 +1,12 @@
 package hotelbooking.hotel.room
 
-interface RoomCustomerView {
-    fun getRoomPrice() : Price
-    fun getBedPrice() : Price
 
+class RoomCustomerPanel internal constructor(internal val room : Room){
+    fun getRoomPrice() : Price{
+        return room.getRoomPrice()
+    }
+
+    fun getBedPrice() : Price{
+        return room.getBedPrice()
+    }
 }

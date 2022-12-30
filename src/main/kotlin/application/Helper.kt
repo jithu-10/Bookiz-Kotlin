@@ -2,7 +2,6 @@ package application
 
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
 
 object InputHelper{
     private val input : Scanner = Scanner(System.`in`)
@@ -140,11 +139,11 @@ object InputHelper{
             println("Enter Valid Date ")
             getDate()
         } else {
-            convertStringtoDate(dateStr)
+            convertStringToDate(dateStr)
         }
     }
 
-    private fun convertStringtoDate(dateStr: String): Date {
+    private fun convertStringToDate(dateStr: String): Date {
         var day = 0
         var month = 0
         val year: Int

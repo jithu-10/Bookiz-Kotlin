@@ -6,10 +6,10 @@ import application.InputHelper.getSimpleDateWithoutYear
 import application.InputHelper.getStringInput
 import hotelbooking.booking.Book
 import hotelbooking.booking.CancelBooking
-import hotelbooking.booking.CustomerBookingInterface
-import hotelbooking.hotel.HotelCustomerInterface
-import hotelbooking.hotel.HotelInterface
-import hotelbooking.hotel.room.RoomCustomerView
+import hotelbooking.booking.CustomerBookingPanel
+import hotelbooking.hotel.HotelCustomerPanel
+import hotelbooking.hotel.HotelPanel
+import hotelbooking.hotel.room.RoomCustomerPanel
 import hotelbooking.users.Customer
 import java.lang.Exception
 import java.util.*
@@ -79,8 +79,8 @@ object CustomerView {
                     println("Enter S.No to Select Hotel : ")
                     val choice = getInputWithinRange(1,availableHotels.size, null)
                     println("\n\n")
-                    val hotel: HotelCustomerInterface = availableHotels[choice-1]
-                    val rooms: List<RoomCustomerView> = availableHotelsWithRooms[hotel]!!
+                    val hotel: HotelCustomerPanel = availableHotels[choice-1]
+                    val rooms: List<RoomCustomerPanel> = availableHotelsWithRooms[hotel]!!
                     val booked: Boolean = expandedHotelDetails(
                         hotel,
                         customer,
@@ -103,8 +103,8 @@ object CustomerView {
 
     private fun printHotelDetailsWithBooking(
         sno: Int,
-        hotel: HotelCustomerInterface,
-        rooms: List<RoomCustomerView>,
+        hotel: HotelCustomerPanel,
+        rooms: List<RoomCustomerPanel>,
         noOfGuestsInEachRoom: List<Int>
     ) {
         printHotelDetails(sno, hotel)
@@ -117,7 +117,7 @@ object CustomerView {
         println("Price(per night) : ₹$listPrice Actual Price(per night) : ₹$maxPrice  $discount%off\n\n")
     }
 
-    private fun printHotelDetails(sno: Int, hotel: HotelCustomerInterface) {
+    private fun printHotelDetails(sno: Int, hotel: HotelCustomerPanel) {
         with(hotel){
             println((sno + 1).toString() + " . " + "BOOKIZ " + getHotelType() + " Hotel ID : " + getID())
             println("\t" + getName())
@@ -130,9 +130,9 @@ object CustomerView {
     }
 
     private fun expandedHotelDetails(
-        hotel: HotelCustomerInterface,
+        hotel: HotelCustomerPanel,
         customer: Customer,
-        rooms: List<RoomCustomerView>,
+        rooms: List<RoomCustomerPanel>,
         book: Book
     ): Boolean {
         println(hotel.getHotelType().toString() + " " + hotel.getID() + " " + hotel.getName())
@@ -199,7 +199,7 @@ object CustomerView {
         return false
     }
 
-    private fun addToFavoriteList(customer: Customer, hotel: HotelCustomerInterface) {
+    private fun addToFavoriteList(customer: Customer, hotel: HotelCustomerPanel) {
         customer.addFavoriteHotels(hotel)
     }
 
@@ -223,7 +223,7 @@ object CustomerView {
         return 3
     }
 
-    private fun getListPrice( rooms: List<RoomCustomerView>): Double {
+    private fun getListPrice( rooms: List<RoomCustomerPanel>): Double {
         var listPrice  =0.0
         for (room in rooms) {
             listPrice += room.getRoomPrice().listPrice
@@ -232,7 +232,7 @@ object CustomerView {
         return listPrice
     }
 
-    private fun getMaxPrice(rooms: List<RoomCustomerView>): Double {
+    private fun getMaxPrice(rooms: List<RoomCustomerPanel>): Double {
         var maxPrice = 0.0
         for (room in rooms) {
 
@@ -241,7 +241,7 @@ object CustomerView {
         return maxPrice
     }
 
-    private fun getBedPrice(rooms: List<RoomCustomerView>, noOfGuestsInEachRoom: List<Int>): Double {
+    private fun getBedPrice(rooms: List<RoomCustomerPanel>, noOfGuestsInEachRoom: List<Int>): Double {
         var bedPrice = 0.0
         var i =0
         for (room in rooms) {
@@ -259,7 +259,7 @@ object CustomerView {
 
 
     private fun listBookings(customer: Customer): Boolean {
-        val bookings: List<CustomerBookingInterface> = customer.getBookings()
+        val bookings: List<CustomerBookingPanel> = customer.getBookings()
         if (bookings.isEmpty()) {
             println("No Bookings Avail")
             return false
@@ -268,11 +268,11 @@ object CustomerView {
         return true
     }
 
-    private fun bookingsWithDetail(bookings: List<CustomerBookingInterface>) {
+    private fun bookingsWithDetail(bookings: List<CustomerBookingPanel>) {
         println("\nBooking List\n")
         for (i in bookings.indices) {
-            val booking: CustomerBookingInterface = bookings[i]
-            val hotel: HotelInterface = booking.getHotel()
+            val booking: CustomerBookingPanel = bookings[i]
+            val hotel: HotelPanel = booking.getHotel()
             println((i + 1).toString() + ".Booking ID : " + booking.getBookingID())
             println("  Check-in Date : " + getSimpleDateWithoutYear(booking.getCheckInDate()) + "   Check-out Date : " + getSimpleDateWithoutYear(booking.getCheckOutDate()))
             println("  " + hotel.getHotelType() + " " + hotel.getName())
@@ -295,9 +295,9 @@ object CustomerView {
         val choice = getInputWithinRange(1,2, null)
         if (choice == 1) {
             println("Enter S.NO to cancel booking")
-            val bookings: List<CustomerBookingInterface> = customer.getBookings()
+            val bookings: List<CustomerBookingPanel> = customer.getBookings()
             val bookingIndex = getInputWithinRange(1,bookings.size, null)
-            val booking: CustomerBookingInterface = bookings[bookingIndex - 1]
+            val booking: CustomerBookingPanel = bookings[bookingIndex - 1]
             CancelBooking(booking)
             println("Booking Cancelled Successfully")
         }
@@ -305,7 +305,7 @@ object CustomerView {
 
 
     private fun listCancelledBookings(customer: Customer) {
-        val bookings: List<CustomerBookingInterface> = customer.getCancelledBookings()
+        val bookings: List<CustomerBookingPanel> = customer.getCancelledBookings()
         if (bookings.isEmpty()) {
             println("No Booking Available ")
             return
@@ -315,7 +315,7 @@ object CustomerView {
 
 
     private fun listFavoriteHotels(customer: Customer) {
-        val favoriteHotels: List<HotelCustomerInterface> = customer.getFavoriteHotels()
+        val favoriteHotels: List<HotelCustomerPanel> = customer.getFavoriteHotels()
         if (favoriteHotels.isEmpty()) {
             println("No Favorite Hotels")
             return

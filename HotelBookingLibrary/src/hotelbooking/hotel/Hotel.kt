@@ -1,24 +1,29 @@
 package hotelbooking.hotel
 
 import hotelbooking.db.AmenityDB
-import hotelbooking.booking.HotelBookingInterface
-import hotelbooking.getDatesBetweenTwoDates
+import hotelbooking.booking.HotelBookingPanel
+import hotelbooking.helper.getDatesBetweenTwoDates
 import hotelbooking.hotel.room.*
 import hotelbooking.users.UserData
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class Hotel(
+internal class Hotel internal constructor(
     private val hotelOwner : UserData,
     private val name : String,
     private val address: Address,
-): HotelAdminInterface, HotelCustomerInterface, HotelAppAdminInterface
+)
 {
+
+    private var hotelAdminInterface : HotelAdminPanel = HotelAdminPanel(this)
+    private var hotelCustomerInterface : HotelCustomerPanel = HotelCustomerPanel(this)
+    private var hotelAppAdminInterface : HotelAppAdminPanel = HotelAppAdminPanel(this)
+
     private var hotelType : HotelType = HotelType.STANDARD
     private var approvalStatus: HotelApprovalStatus = HotelApprovalStatus.ON_PROCESS
     private var rooms : ArrayList<Room> = ArrayList()
     private var amenities : ArrayList<Amenity> = ArrayList()
-    private var bookings : ArrayList<HotelBookingInterface> = ArrayList()
+    private var bookings : ArrayList<HotelBookingPanel> = ArrayList()
     private var roomBookedStatus : HashMap<Room,ArrayList<Date>> = HashMap();
     private val id : Int = generateId();
 
@@ -30,30 +35,30 @@ internal class Hotel(
         }
     }
 
-    override fun getID() : Int{
+    fun getID() : Int{
         return id;
     }
-    override fun getName() : String{
+    fun getName() : String{
         return name;
     }
 
-    override fun getAddress() : Address {
+    fun getAddress() : Address {
         return address;
     }
 
-    override fun getPhoneNumber() : Long{
+    fun getPhoneNumber() : Long{
         return hotelOwner.phoneNumber
     }
 
-    override fun getHotelType() : HotelType {
+    fun getHotelType() : HotelType {
         return hotelType;
     }
 
-    override fun setHotelType(hotelType: HotelType){
+    fun setHotelType(hotelType: HotelType){
         this.hotelType=hotelType
     }
 
-    override fun setHotelType() {
+    fun setHotelType() {
         val amenityPercent = getTotalAmenityPercent()
         hotelType = if (amenityPercent >= 90) {
             HotelType.ELITE
@@ -64,52 +69,57 @@ internal class Hotel(
         }
     }
 
-    override fun getApprovalStatus() : HotelApprovalStatus {
+    fun getApprovalStatus() : HotelApprovalStatus {
         return approvalStatus;
     }
 
-    override fun getRooms(): List<RoomHotelView> {
-        return rooms
+    fun getRooms(): List<RoomHotelPanel> {
+        return rooms.map{
+            it.getRoomHotelPanel()
+        }
     }
 
-    override fun getRoomsForAdmin(): List<RoomAdminView>{
-        return rooms
+    fun getRoomsForAdmin(): List<RoomAdminPanel>{
+        return rooms.map{
+            it.getRoomAdminPanel()
+        }
+
     }
 
 
 
-    override fun setApprovalStatus(approvalStatus: HotelApprovalStatus){
+    fun setApprovalStatus(approvalStatus: HotelApprovalStatus){
         this.approvalStatus=approvalStatus
     }
 
 
 
-    override fun getTotalNumberOfRooms(): Int {
+    fun getTotalNumberOfRooms(): Int {
         return rooms.size
     }
 
 
 
-    override fun addRoom(maxGuest: Int, roomPrice: Price, bedPrice: Price) {
+    fun addRoom(maxGuest: Int, roomPrice: Price, bedPrice: Price) {
         rooms.add(Room(maxGuest,roomPrice,bedPrice))
     }
 
-    override fun removeRoom(room: RoomHotelView) {
-        rooms.remove(room)
+    fun removeRoom(room: RoomHotelPanel) {
+        rooms.remove(room.room)
     }
 
 
 
-    override fun getAmenities() : List<Amenity>{
+    fun getAmenities() : List<Amenity>{
         return amenities;
     }
 
-    override fun getAllAmenities() : List<Amenity>{
+    fun getAllAmenities() : List<Amenity>{
         return AmenityDB.getAmenities()
 
     }
 
-    override fun getTotalAmenityPercent() : Int{
+    fun getTotalAmenityPercent() : Int{
         val totalAmenityPoints: Double = getAllAmenities().let{ list ->
             var points = 0.0
             list.forEach{
@@ -127,37 +137,37 @@ internal class Hotel(
         return ((totalHotelAmenityPoints / totalAmenityPoints) * 100).toInt()
     }
 
-    override fun addAmenity(amenity: Amenity){
+    fun addAmenity(amenity: Amenity){
         amenities.add(amenity)
     }
 
-    override fun removeAmenity(amenity: Amenity){
+    fun removeAmenity(amenity: Amenity){
         amenities.remove(amenity)
     }
 
-    internal fun addBooking(booking : HotelBookingInterface){
+    internal fun addBooking(booking : HotelBookingPanel){
         bookings.add(booking);
         addRoomBooking(booking.getCheckInDate(),booking.getCheckOutDate(),booking.getBookedRooms())
     }
 
-    private fun addRoomBooking(checkInDate : Date, checkOutDate : Date, rooms : List<RoomCustomerView>){
+    private fun addRoomBooking(checkInDate : Date, checkOutDate : Date, rooms : List<RoomCustomerPanel>){
         for(room in rooms){
-            updateRoomBookedStatus(room as Room,checkInDate,checkOutDate,true)
+            updateRoomBookedStatus(room.room,checkInDate,checkOutDate,true)
         }
     }
 
-    internal fun removeBooking(booking : HotelBookingInterface){
+    internal fun removeBooking(booking : HotelBookingPanel){
         bookings.remove(booking)
         cancelRoomBooking(booking.getCheckInDate(),booking.getCheckOutDate(),booking.getBookedRooms())
     }
 
-    private fun cancelRoomBooking(checkInDate: Date,checkOutDate: Date,rooms : List<RoomCustomerView>){
+    private fun cancelRoomBooking(checkInDate: Date,checkOutDate: Date,rooms : List<RoomCustomerPanel>){
         for(room in rooms){
-            updateRoomBookedStatus(room as Room,checkInDate,checkOutDate,false)
+            updateRoomBookedStatus(room.room,checkInDate,checkOutDate,false)
         }
     }
 
-    internal fun getBookingByID(id : Int): HotelBookingInterface {
+    internal fun getBookingByID(id : Int): HotelBookingPanel {
         for(booking in bookings){
             if(booking in bookings) {
                 if(booking.getBookingID()==id)return booking
@@ -167,7 +177,7 @@ internal class Hotel(
         throw Exception("Not Found")
     }
 
-    override fun getBookings(): List<HotelBookingInterface>{
+    fun getBookings(): List<HotelBookingPanel>{
         return bookings
     }
 
@@ -194,12 +204,12 @@ internal class Hotel(
         }
     }
 
-    internal fun checkRoomBookedByDate(room : RoomHotelView, date: Date): Boolean {
+    internal fun checkRoomBookedByDate(room : Room, date: Date): Boolean {
         val bookedDates = roomBookedStatus[room]
         return bookedDates != null && bookedDates.contains(date)
     }
 
-    override fun getNoOfRoomsBookedByDate(date: Date): Int {
+    fun getNoOfRoomsBookedByDate(date: Date): Int {
         var value = 0
         for (room in rooms) {
             if (checkRoomBookedByDate(room, date)) {
@@ -207,6 +217,18 @@ internal class Hotel(
             }
         }
         return value
+    }
+    
+    fun getHotelAdminInterface() : HotelAdminPanel{
+        return hotelAdminInterface
+    }
+    
+    fun getHotelAppAdminInterface() : HotelAppAdminPanel{
+        return hotelAppAdminInterface
+    }
+    
+    fun getHotelCustomerInterface() : HotelCustomerPanel{
+        return hotelCustomerInterface
     }
 
 

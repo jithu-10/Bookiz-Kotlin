@@ -1,24 +1,24 @@
 package hotelbooking.booking
 
 import hotelbooking.db.BookingDB
-import hotelbooking.hotel.Hotel
-import hotelbooking.hotel.HotelInterface
+import hotelbooking.hotel.*
 
-class CancelBooking(private val booking : CustomerBookingInterface) {
+class CancelBooking(private val booking : CustomerBookingPanel) {
     init{
         cancelBooking()
     }
 
     private fun cancelBooking(){
 
-        (booking as BookingDetails).setBookingStatus(BookingStatus.CANCELLED)
+        booking.booking.setBookingStatus(BookingStatus.CANCELLED)
         removeBookingFromHotel(booking.getHotel())
         removeBookingFromDB();
     }
 
 
-    private fun removeBookingFromHotel(hotel : HotelInterface){
-        (hotel as Hotel).removeBooking(hotel.getBookingByID(booking.getBookingID()))
+    private fun removeBookingFromHotel(hotel : HotelPanel){
+
+        hotel.hotel.removeBooking(hotel.hotel.getBookingByID(booking.getBookingID()))
     }
 
     private fun removeBookingFromDB(){

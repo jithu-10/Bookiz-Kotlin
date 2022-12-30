@@ -4,24 +4,22 @@ import hotelbooking.db.AmenityDB
 import hotelbooking.db.BookingDB
 import hotelbooking.db.HotelDB
 import hotelbooking.db.LocationDB
-import hotelbooking.booking.BookingInterface
+import hotelbooking.booking.BookingPanel
 import hotelbooking.hotel.Amenity
 import hotelbooking.hotel.Hotel
-import hotelbooking.hotel.HotelAppAdminInterface
+import hotelbooking.hotel.HotelAppAdminPanel
 import hotelbooking.hotel.HotelApprovalStatus
-import hotelbooking.hotel.room.Room
-import hotelbooking.hotel.room.RoomAdminView
 
 class AppAdmin internal constructor(): User {
     override val userData: UserData = UserData("admin",1234567890,"admin@bookiz.com")
 
-    fun approveHotel(hotel : HotelAppAdminInterface){
+    fun approveHotel(hotel : HotelAppAdminPanel){
         hotel.setApprovalStatus(HotelApprovalStatus.APPROVED)
         LocationDB.addLocation(hotel.getAddress().city)
         LocationDB.addLocation(hotel.getAddress().locality);
     }
 
-    fun rejectHotel(hotel : HotelAppAdminInterface){
+    fun rejectHotel(hotel : HotelAppAdminPanel){
         if(hotel.getApprovalStatus()== HotelApprovalStatus.ON_PROCESS) {
             hotel.setApprovalStatus(HotelApprovalStatus.REJECTED);
         }
@@ -32,20 +30,28 @@ class AppAdmin internal constructor(): User {
         }
     }
 
-    fun removeHotel(hotel : HotelAppAdminInterface){
+    fun removeHotel(hotel : HotelAppAdminPanel){
         LocationDB.removeLocation(hotel.getAddress().locality)
         LocationDB.removeLocation(hotel.getAddress().city)
         hotel.setApprovalStatus(HotelApprovalStatus.REMOVED)
     }
 
-    fun getRegisteredHotels() : List<HotelAppAdminInterface>{
-        return HotelDB.getHotels()
-            .filter { hotel : Hotel -> hotel.getApprovalStatus()== HotelApprovalStatus.APPROVED };
+    fun getRegisteredHotels() : List<HotelAppAdminPanel>{
+        val hotels : MutableList<HotelAppAdminPanel> = mutableListOf()
+        HotelDB.getHotels()
+            .filter { hotel : Hotel -> hotel.getApprovalStatus()== HotelApprovalStatus.APPROVED }.forEach{
+                hotels.add(it.getHotelAppAdminInterface())
+            }
+        return hotels
     }
 
-    fun getApprovalRequestedHotels(): List<HotelAppAdminInterface> {
-        return HotelDB.getHotels()
-            .filter { hotel: Hotel -> hotel.getApprovalStatus() == HotelApprovalStatus.ON_PROCESS || hotel.getApprovalStatus() == HotelApprovalStatus.REMOVED_RE_PROCESS }
+    fun getApprovalRequestedHotels(): List<HotelAppAdminPanel> {
+        val hotels : MutableList<HotelAppAdminPanel> = mutableListOf()
+        HotelDB.getHotels()
+            .filter { hotel: Hotel -> hotel.getApprovalStatus() == HotelApprovalStatus.ON_PROCESS || hotel.getApprovalStatus() == HotelApprovalStatus.REMOVED_RE_PROCESS }.forEach{
+                hotels.add(it.getHotelAppAdminInterface())
+            }
+        return hotels
     }
 
 
@@ -61,7 +67,7 @@ class AppAdmin internal constructor(): User {
         return AmenityDB.getAmenities()
     }
 
-    fun getAllBookings() : List<BookingInterface>{
+    fun getAllBookings() : List<BookingPanel>{
         return BookingDB.getBookings()
     }
 }

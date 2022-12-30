@@ -1,50 +1,56 @@
 package hotelbooking.hotel.room
 
-internal data class Room(
+internal class Room(
     private val roomCapacity : Int,
     private var roomPrice : Price,
-    private var bedPrice : Price
-) : RoomCustomerView,RoomHotelView,RoomAdminView{
+    private var bedPrice : Price,
+) {
+    
+    private val roomCustomerPanel : RoomCustomerPanel = RoomCustomerPanel(this)
+    private val roomHotelPanel : RoomHotelPanel = RoomHotelPanel(this)
+    private val roomAdminPanel : RoomAdminPanel = RoomAdminPanel(this)
 
-    val id : Int = generateId();
-
-    companion object{
-        private var id_helper=0;
-
-        fun generateId() : Int{
-            return ++id_helper;
-        }
-    }
-
-    override fun getRoomCapacity(): Int {
+    fun getRoomCapacity(): Int {
         return roomCapacity
     }
 
-    override fun getRoomPrice() : Price {
+    fun getRoomPrice() : Price {
         return roomPrice
     }
 
-    override fun setRoomPrice(roomPrice: Price) {
+    fun setRoomPrice(roomPrice: Price) {
         this.roomPrice=roomPrice
     }
 
-    override fun setRoomListPrice(listPrice : Double){
+    fun setRoomListPrice(listPrice : Double){
         roomPrice = roomPrice.copy( listPrice = listPrice)
     }
 
-    override fun setBedListPrice(listPrice: Double){
+    fun setBedListPrice(listPrice: Double){
         bedPrice = bedPrice.copy( listPrice = listPrice)
     }
 
 
 
 
-    override fun getBedPrice() : Price{
+    fun getBedPrice() : Price{
         return bedPrice
     }
 
-    override fun setBedPrice(bedPrice: Price) {
+    fun setBedPrice(bedPrice: Price) {
         this.bedPrice=bedPrice
+    }
+
+    fun getRoomCustomerPanel() : RoomCustomerPanel{
+        return roomCustomerPanel
+    }
+
+    fun getRoomAdminPanel() : RoomAdminPanel{
+        return roomAdminPanel
+    }
+
+    fun getRoomHotelPanel() : RoomHotelPanel{
+        return roomHotelPanel
     }
 
 }

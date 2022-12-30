@@ -1,11 +1,11 @@
-package hotelbooking
+package hotelbooking.helper
 
 import java.util.*
 
 internal fun getDatesBetweenTwoDates(startDate: Date, endDate: Date): ArrayList<Date> {
     val datesInRange = ArrayList<Date>()
     val calendar: Calendar = getCalendarWithoutTime(startDate)
-    val endCalendar: Calendar =getCalendarWithoutTime(endDate)
+    val endCalendar: Calendar = getCalendarWithoutTime(endDate)
     while (calendar.before(endCalendar)) {
         val result = calendar.time
         datesInRange.add(result)

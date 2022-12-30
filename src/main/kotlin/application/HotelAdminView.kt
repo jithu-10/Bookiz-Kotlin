@@ -5,10 +5,10 @@ import application.InputHelper.getInputWithinRange
 
 import application.InputHelper.getSimpleDateWithoutYear
 import application.InputHelper.getStringInput
-import hotelbooking.booking.HotelBookingInterface
+import hotelbooking.booking.HotelBookingPanel
 import hotelbooking.hotel.*
 import hotelbooking.hotel.room.Price
-import hotelbooking.hotel.room.RoomHotelView
+import hotelbooking.hotel.room.RoomHotelPanel
 import hotelbooking.users.HotelAdmin
 import hotelbooking.users.UserData
 import java.util.*
@@ -49,7 +49,7 @@ object HotelAdminView {
         }
 
         val choice = getInputWithinRange(1,hotelsOwned.size,null)
-        val hotel : HotelAdminInterface = hotelsOwned[choice-1]
+        val hotel : HotelAdminPanel = hotelsOwned[choice-1]
         hotelMenu(hotel,hotelAdmin)
 
     }
@@ -85,7 +85,7 @@ object HotelAdminView {
         return Address(buildingNo, street, locality, city, state, postalCode)
     }
 
-    private fun hotelMenu(hotel : HotelAdminInterface, hotelAdmin: HotelAdmin){
+    private fun hotelMenu(hotel : HotelAdminPanel, hotelAdmin: HotelAdmin){
        
         when(hotel.getApprovalStatus()){
             HotelApprovalStatus.APPROVED -> approvedHotelMenu(hotel)
@@ -98,7 +98,7 @@ object HotelAdminView {
     }
 
 
-    private fun approvedHotelMenu(hotel : HotelAdminInterface){
+    private fun approvedHotelMenu(hotel : HotelAdminPanel){
         println("Hotel : "+hotel.getName())
 
         do {
@@ -119,7 +119,7 @@ object HotelAdminView {
         } while (true)
     }
 
-    private fun unApprovedHotelMenu(hotel : HotelAdminInterface){
+    private fun unApprovedHotelMenu(hotel : HotelAdminPanel){
         println("Hotel : "+hotel.getName())
         println()
         println("Your Hotel Yet to be approved")
@@ -139,7 +139,7 @@ object HotelAdminView {
         } while (true)
     }
 
-    private fun rejectedHotelMenu(hotel : HotelAdminInterface, hotelAdmin: HotelAdmin){
+    private fun rejectedHotelMenu(hotel : HotelAdminPanel, hotelAdmin: HotelAdmin){
         println("Hotel : "+hotel.getName())
         println()
         println("Your Hotel has been rejected. ")
@@ -160,7 +160,7 @@ object HotelAdminView {
         } while (true)
     }
 
-    private fun removedHotelMenu(hotel : HotelAdminInterface, hotelAdmin : HotelAdmin){
+    private fun removedHotelMenu(hotel : HotelAdminPanel, hotelAdmin : HotelAdmin){
         println("Hotel : "+hotel.getName())
         println()
         println("Your Hotel been removed from the app . Your Hotel Will not shown to customers until further update")
@@ -186,7 +186,7 @@ object HotelAdminView {
     }
 
 
-    private fun addRooms(hotel : HotelAdminInterface){
+    private fun addRooms(hotel : HotelAdminPanel){
         println("Enter No of Types of Rooms : ")
         val types: Int = getInputWithinRange(1,5,"only up to 5 types of room add at a time")
         for (i in 0 until types) {
@@ -203,7 +203,7 @@ object HotelAdminView {
         }
     }
 
-    private fun removeRooms(hotel : HotelAdminInterface){
+    private fun removeRooms(hotel : HotelAdminPanel){
         println("Remove Rooms ")
         val rooms = hotel.getRooms()
         if (rooms.isEmpty()) {
@@ -216,7 +216,7 @@ object HotelAdminView {
         hotel.removeRoom(rooms[choice - 1])
     }
 
-    private fun addHotelAmenities(hotel : HotelAdminInterface){
+    private fun addHotelAmenities(hotel : HotelAdminPanel){
         val totalAmenities: List<Amenity> = hotel.getAllAmenities()
         val hotelAmenities = hotel.getAmenities()
         if (totalAmenities.isEmpty()) {
@@ -241,7 +241,7 @@ object HotelAdminView {
         }
     }
 
-    private fun removeHotelAmenities(hotel : HotelAdminInterface){
+    private fun removeHotelAmenities(hotel : HotelAdminPanel){
         val hotelAmenities = hotel.getAmenities()
         if (hotelAmenities.isEmpty()) {
             println("No Amenity Available")
@@ -259,7 +259,7 @@ object HotelAdminView {
         hotel.removeAmenity(hotelAmenities[value - 1])
     }
 
-    private fun showRoomsBookedNonBooked(hotel : HotelAdminInterface){
+    private fun showRoomsBookedNonBooked(hotel : HotelAdminPanel){
         println("Enter Date : ")
         val date: Date = InputHelper.getDate()
         val currentDate: Date = InputHelper.getCurrentDate()
@@ -274,8 +274,8 @@ object HotelAdminView {
         println(noOfRoomsBookedByDate.toString() + "        " + (hotel.getTotalNumberOfRooms() - noOfRoomsBookedByDate))
     }
 
-    private fun changeRoomPrices(hotel : HotelAdminInterface){
-        val rooms: List<RoomHotelView> = hotel.getRooms()
+    private fun changeRoomPrices(hotel : HotelAdminPanel){
+        val rooms: List<RoomHotelPanel> = hotel.getRooms()
         displayRooms(rooms)
         println("Change Room Price")
         println("Enter S.No Change Room Price : ")
@@ -288,8 +288,8 @@ object HotelAdminView {
     }
 
 
-    private fun bookedCustomersList(hotel: HotelAdminInterface) {
-        val bookings: List<HotelBookingInterface> = hotel.getBookings()
+    private fun bookedCustomersList(hotel: HotelAdminPanel) {
+        val bookings: List<HotelBookingPanel> = hotel.getBookings()
         if (bookings.isEmpty()) {
             println("No Customers Booked rooms")
             return
@@ -304,8 +304,8 @@ object HotelAdminView {
 
     }
 
-    private fun verifyCustomer(hotel : HotelAdminInterface){
-        val bookings: List<HotelBookingInterface> = hotel.getBookings()
+    private fun verifyCustomer(hotel : HotelAdminPanel){
+        val bookings: List<HotelBookingPanel> = hotel.getBookings()
         if (bookings.isEmpty()) {
             println("No Customer Booked rooms")
             return
@@ -323,7 +323,7 @@ object HotelAdminView {
         println("No Customer booked in your hotel with following ID")
     }
 
-    private fun customerDetails(sno: Int, booking : HotelBookingInterface, customer: UserData) {
+    private fun customerDetails(sno: Int, booking : HotelBookingPanel, customer: UserData) {
         with(booking){
             println((sno+1).toString() + " Customer Name : " + customer.userName)
             println("Booking ID : " + getBookingID())
@@ -337,7 +337,7 @@ object HotelAdminView {
         
     }
 
-    private fun changeHotelType(hotel : HotelAdminInterface){
+    private fun changeHotelType(hotel : HotelAdminPanel){
         println("Hotel Type : " + hotel.getHotelType())
         println("1." + "Change Hotel Type")
         println("2." + "Back")
@@ -347,7 +347,7 @@ object HotelAdminView {
         }
     }
 
-    private fun registerAgain(hotel : HotelAdminInterface, hotelAdmin: HotelAdmin){
+    private fun registerAgain(hotel : HotelAdminPanel, hotelAdmin: HotelAdmin){
         hotelAdmin.reRegisterHotel(hotel)
         println("Hotel Registered Again")
     }
@@ -386,7 +386,7 @@ object HotelAdminView {
     }
 
 
-    private fun displayRooms(rooms: List<RoomHotelView>) {
+    private fun displayRooms(rooms: List<RoomHotelPanel>) {
         var sno = 0
         for (room in rooms) {
             println((sno + 1).toString() + ".Room Max Capacity : " + room.getRoomCapacity())
@@ -396,7 +396,7 @@ object HotelAdminView {
         }
     }
 
-    private fun hotelTypeSpecification(hotel: HotelAdminInterface) {
+    private fun hotelTypeSpecification(hotel: HotelAdminPanel) {
         println("Select Hotel Type : ")
         println("1." + HotelType.ELITE + " HOTEL ")
         println("2." + HotelType.PREMIUM + " HOTEL ")

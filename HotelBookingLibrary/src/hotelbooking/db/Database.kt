@@ -1,9 +1,9 @@
 package hotelbooking.db
 
-import hotelbooking.booking.BookingInterface
+import hotelbooking.booking.BookingPanel
 import hotelbooking.hotel.Amenity
 import hotelbooking.hotel.Hotel
-import hotelbooking.modifyString
+import hotelbooking.helper.modifyString
 import hotelbooking.users.AppAdmin
 import hotelbooking.users.User
 import hotelbooking.users.UserData
@@ -118,17 +118,17 @@ internal object HotelDB{
 
 internal object BookingDB{
 
-    private val bookings : ArrayList<BookingInterface> = ArrayList();
+    private val bookings : ArrayList<BookingPanel> = ArrayList();
 
-    fun addBooking(booking : BookingInterface){
+    fun addBooking(booking : BookingPanel){
         bookings.add(booking)
     }
 
-    fun removeBooking(booking : BookingInterface){
+    fun removeBooking(booking : BookingPanel){
         bookings.remove(booking)
     }
 
-    fun getBookings() : List<BookingInterface>{
+    fun getBookings() : List<BookingPanel>{
         return bookings;
     }
 
@@ -147,7 +147,7 @@ internal object LocationDB{
     }
 
     fun isLocationAvailable(location: String) : Boolean{
-        return locations.contains(location);
+        return locations.contains(modifyString( location));
     }
 }
 

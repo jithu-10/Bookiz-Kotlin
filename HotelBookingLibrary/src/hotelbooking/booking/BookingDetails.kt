@@ -1,8 +1,7 @@
 package hotelbooking.booking
 
-import hotelbooking.hotel.room.Room
-import hotelbooking.hotel.HotelInterface
-import hotelbooking.hotel.room.RoomCustomerView
+import hotelbooking.hotel.HotelPanel
+import hotelbooking.hotel.room.RoomCustomerPanel
 import hotelbooking.users.UserData
 import java.util.*
 
@@ -10,12 +9,15 @@ internal class BookingDetails(
     private val checkInDate : Date,
     private val checkOutDate : Date,
     private val customerData : UserData,
-    private val hotel : HotelInterface,
+    private val hotel : HotelPanel,
     private val noOfGuestsInEachRoom : List<Int>,
-    private val bookedRooms : List<RoomCustomerView>,
+    private val bookedRooms : List<RoomCustomerPanel>,
     private val paid : Boolean,
     private var bookingStatus : BookingStatus
-) : CustomerBookingInterface, HotelBookingInterface {
+) {
+
+    private val customerBookingPanel : CustomerBookingPanel = CustomerBookingPanel(this)
+    private val hotelBookingPanel : HotelBookingPanel = HotelBookingPanel(this)
 
     private val id = generateId();
     private var totalPrice :Double = 0.0
@@ -29,27 +31,27 @@ internal class BookingDetails(
     }
 
 
-    override fun getBookingID(): Int {
+    fun getBookingID(): Int {
         return id;
     }
 
-    override fun getCheckInDate(): Date {
+    fun getCheckInDate(): Date {
         return checkInDate;
     }
 
-    override fun getCheckOutDate(): Date {
+    fun getCheckOutDate(): Date {
         return checkOutDate;
     }
 
-    override fun getCustomerData(): UserData {
+    fun getCustomerData(): UserData {
         return customerData;
     }
 
-    override fun getHotel(): HotelInterface {
+    fun getHotel(): HotelPanel {
         return hotel;
     }
 
-    override fun getBookingStatus(): BookingStatus {
+    fun getBookingStatus(): BookingStatus {
         return bookingStatus;
     }
 
@@ -57,29 +59,37 @@ internal class BookingDetails(
         this.bookingStatus=bookingStatus
     }
 
-    override fun getNoOfRoomsBooked(): Int {
+    fun getNoOfRoomsBooked(): Int {
         return noOfGuestsInEachRoom.size
     }
 
-    override fun getBookedRooms(): List<RoomCustomerView> {
+    fun getBookedRooms(): List<RoomCustomerPanel> {
         return bookedRooms
     }
 
-    override fun getPaymentStatus(): Boolean {
+    fun getPaymentStatus(): Boolean {
         return paid
     }
 
 
-    override fun getNoOfGuestsInEachRoom(): List<Int> {
+    fun getNoOfGuestsInEachRoom(): List<Int> {
         return noOfGuestsInEachRoom
     }
 
-    override fun getTotalPrice(): Double {
+    fun getTotalPrice(): Double {
         return totalPrice
     }
 
     fun setTotalPrice(totalPrice : Double){
         this.totalPrice=totalPrice
+    }
+
+    fun getCustomerBookingPanel() : CustomerBookingPanel{
+        return customerBookingPanel
+    }
+
+    fun getHotelBookingPanel() : HotelBookingPanel{
+        return hotelBookingPanel
     }
 
 }

@@ -1,15 +1,60 @@
 package application
 
 import hotelbooking.Authentication
+import hotelbooking.booking.Book
+import hotelbooking.hotel.Address
+import hotelbooking.hotel.Amenity
+import hotelbooking.hotel.HotelType
+import hotelbooking.hotel.room.Price
 import hotelbooking.users.UserData
 
 import java.lang.Exception
+import java.util.*
 
 
 object Application {
 
     fun startApp(){
+       init()
         welcomeMessage()
+    }
+
+    private fun init(){
+
+        val admin = Authentication.signInAsAdmin(Authentication.signIn("1234567890","pass"))
+        val amenity1 = Amenity("AC",20)
+        val amenity2 = Amenity("Fridge",40)
+        admin.addAmenity(amenity1)
+        admin.addAmenity(amenity2)
+
+        Authentication.signUp("hotel","j@gm.c",9876543211,"pass")
+        val hotelAdmin = Authentication.signInAsHotelAdmin(Authentication.signIn("9876543211","pass"))
+        hotelAdmin.registerHotel(hotelAdmin.userData,"Grand Chola", Address("2A","Old Trafford Street","Tambaram","Chennai","TamilNadu",123456)).apply {
+
+            addRoom(3, Price(1000.0,2000.0), Price(100.0,200.0))
+            addRoom(3, Price(1000.0,2000.0), Price(100.0,200.0))
+            addRoom(3, Price(1000.0,2000.0), Price(100.0,200.0))
+            setHotelType(HotelType.ELITE)
+            addAmenity(amenity2)
+        }
+
+        admin.approveHotel(admin.getApprovalRequestedHotels()[0])
+
+        Authentication.signUp("customer","j@gm3.c",1234512345,"pass")
+        val customer = Authentication.signInAsCustomer(Authentication.signIn("1234512345","pass"))
+
+        val cal = Calendar.getInstance()
+        cal[2023, Calendar.JANUARY, 1, 0, 0] = 0
+
+        val checkInDate = cal.time
+
+        cal[2023, Calendar.JANUARY, 3, 0, 0] = 0
+        val checkOutDate = cal.time
+
+        val book = Book(checkInDate,checkOutDate,"Chennai", listOf(1,2,3))
+        book.bookHotel(customer,book.filterHotels().keys.toList()[0],true)
+
+
     }
 
     private fun welcomeMessage(){
